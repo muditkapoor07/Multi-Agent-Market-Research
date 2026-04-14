@@ -1,0 +1,39 @@
+# ── Core ──────────────────────────────────────────────────────────────────────
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+httpx>=0.27.0
+
+# ── LLM / Groq ────────────────────────────────────────────────────────────────
+openai>=1.35.0          # OpenAI-compatible SDK used against Groq endpoint
+
+# ── MCP ───────────────────────────────────────────────────────────────────────
+mcp>=1.2.0              # Official MCP Python SDK
+mcp-server-fetch>=0.6.0 # Fetch MCP server (Python, not npm)
+
+# ── Web / Async ───────────────────────────────────────────────────────────────
+aiohttp>=3.9.0
+asyncio-throttle>=1.0.2
+ddgs>=9.0.0               # Free fallback search — DuckDuckGo (no API key needed)
+beautifulsoup4>=4.12.0
+lxml>=5.1.0
+
+# ── Database ──────────────────────────────────────────────────────────────────
+aiosqlite>=0.20.0
+
+# ── API ───────────────────────────────────────────────────────────────────────
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+apscheduler>=3.10.4
+
+# ── UI ────────────────────────────────────────────────────────────────────────
+streamlit>=1.35.0
+plotly>=5.22.0
+pandas>=2.2.0
+
+# ── Windows SSL fix ───────────────────────────────────────────────────────────
+truststore>=0.9.1; sys_platform == "win32"
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+rich>=13.7.0            # Pretty terminal output
+tenacity>=8.3.0         # Retry logic
+python-dateutil>=2.9.0

@@ -1,0 +1,72 @@
+# render.yaml — Render.com deployment configuration
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  # ── FastAPI backend ──────────────────────────────────────────────────────────
+  - type: web
+    name: ci-research-api
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      npm install -g @modelcontextprotocol/server-brave-search \
+                     @modelcontextprotocol/server-fetch \
+                     @modelcontextprotocol/server-github \
+                     @modelcontextprotocol/server-memory
+    startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false          # set manually in Render dashboard
+      - key: BRAVE_API_KEY
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: DEFAULT_TOPICS
+        value: "OpenAI competitors,Anthropic Claude,AI agent frameworks"
+      - key: SCHEDULER_CRON_HOUR
+        value: "8"
+      - key: SCHEDULER_CRON_MINUTE
+        value: "0"
+      - key: MAX_SEARCH_RESULTS
+        value: "10"
+      - key: MAX_SCRAPE_ARTICLES
+        value: "5"
+      - key: MAX_GITHUB_REPOS
+        value: "10"
+      - key: PYTHONDONTWRITEBYTECODE
+        value: "1"
+    disk:
+      name: reports-storage
+      mountPath: /opt/render/project/src/reports
+      sizeGB: 1
+
+  # ── Streamlit frontend ───────────────────────────────────────────────────────
+  - type: web
+    name: ci-research-ui
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      npm install -g @modelcontextprotocol/server-brave-search \
+                     @modelcontextprotocol/server-fetch \
+                     @modelcontextprotocol/server-github \
+                     @modelcontextprotocol/server-memory
+    startCommand: streamlit run streamlit_app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: BRAVE_API_KEY
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: PYTHONDONTWRITEBYTECODE
+        value: "1"
+    disk:
+      name: ui-reports-storage
+      mountPath: /opt/render/project/src/reports
+      sizeGB: 1
